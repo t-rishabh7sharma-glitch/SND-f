@@ -1,0 +1,7 @@
+{
+  "name": "ZAMTEL Sales & Distribution CRM",
+  "description": "Comprehensive Sales & Distribution CRM for Zamtel, featuring role-based dashboards for ASEs, Team Leaders, and management.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

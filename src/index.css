@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+
+  --color-primary: #00682f;
+  --color-primary-dark: #004d22;
+  --color-secondary: #296b3d;
+  --color-primary-container: #d4edda;
+  --color-on-primary: #ffffff;
+  --color-surface: #fcf9f8;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3ede9;
+  --color-surface-container: #ede8e4;
+  --color-on-surface: #1a1a1a;
+  --color-on-surface-variant: #555555;
+  
+  --color-rag-green: #00682f;
+  --color-rag-amber: #b45309;
+  --color-rag-red: #991b1b;
+  --color-rag-green-bg: #dcfce7;
+  --color-rag-amber-bg: #fef3c7;
+  --color-rag-red-bg: #fee2e2;
+
+  --shadow-ambient: 0 12px 40px rgba(0,0,0,0.06);
+  --radius-main: 1rem;
+  --radius-feature: 1.5rem;
+}
+
+@layer base {
+  body {
+    @apply font-body bg-surface-container-low text-on-surface antialiased;
+  }
+  
+  h1, h2, h3, .display {
+    @apply font-display font-bold;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply backdrop-blur-lg bg-white/80 border border-white/40;
+  }
+  
+  .card-base {
+    @apply bg-surface-container-lowest rounded-feature shadow-ambient transition-all duration-200 ease-in-out border border-black/5 hover:-translate-y-1 hover:shadow-xl;
+  }
+}
+
+@keyframes pulse-custom {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.pulse-dot {
+  @apply w-2 h-2 bg-emerald-500 rounded-full inline-block mr-2;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-custom 2s infinite;
+}
+
+@media print {
+  aside, header, .btn, .no-print, .pulse-dot {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    padding: 0 !important;
+  }
+  main {
+    padding: 20px !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+  .card-base {
+    box-shadow: none !important;
+    border: 1px solid #eee !important;
+    break-inside: avoid;
+    margin-bottom: 20px !important;
+  }
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  th, td {
+    border-bottom: 1px solid #eee !important;
+    padding: 8px !important;
+  }
+  .StatCard {
+    break-inside: avoid;
+  }
+}
