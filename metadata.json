@@ -1,6 +1,6 @@
 {
-  "name": "ZAMTEL Sales & Distribution CRM",
-  "description": "Comprehensive Sales & Distribution CRM for Zamtel, featuring role-based dashboards for ASEs, Team Leaders, and management.",
+  "name": "Sales & Distribution CRM",
+  "description": "Field execution and back-office console with role-based access for distribution teams.",
   "requestFramePermissions": [
     "geolocation"
   ]

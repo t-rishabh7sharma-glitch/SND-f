@@ -4,9 +4,14 @@ import { CheckCircle2, TrendingUp, MapPin, Users, Trophy, ArrowUpRight, X, Clock
 
 interface KpiModuleProps {
   sessionKpis?: { visits: number; grossAdditions: number; agentActivation: number; floatChecks: number; };
+  /**
+   * Profile tab: hide the trophy strip, the embedded “Team Leaderboard” inside KPI,
+   * and keep weekly breakdown only — one team list lives on `FieldProfileView` below KPIs.
+   */
+  hideTeamRankBadge?: boolean;
 }
 
-const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis }) => {
+const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = false }) => {
   const [drillCard, setDrillCard] = useState<string | null>(null);
 
   // ── Session-aware values (today = 0-based from sessionKpis) ──
@@ -84,10 +89,12 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis }) => {
           <h1 className="text-xl lg:text-2xl font-display font-black text-primary tracking-tight">My Performance</h1>
           <p className="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mt-0.5">Self-monitoring KPIs • Today's session</p>
         </div>
-        <div className="bg-primary/10 px-3 py-1.5 rounded-xl flex items-center gap-2">
-          <Trophy size={14} className="text-primary" />
-          <span className="text-[10px] font-black text-primary uppercase tracking-wider">#2 in Team • Top 10% Zone</span>
-        </div>
+        {!hideTeamRankBadge && (
+          <div className="bg-primary/10 px-3 py-1.5 rounded-xl flex items-center gap-2">
+            <Trophy size={14} className="text-primary" />
+            <span className="text-[10px] font-black text-primary uppercase tracking-wider">#2 in Team • Top 10% Zone</span>
+          </div>
+        )}
       </div>
 
       {/* ── HERO KPI CARDS (clickable) ── */}
@@ -115,7 +122,7 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis }) => {
       {/* ── DRILL-DOWN MODAL ── */}
       <AnimatePresence>
         {drillCard && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setDrillCard(null)}>
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setDrillCard(null)}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -277,8 +284,8 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis }) => {
         )}
       </AnimatePresence>
 
-      {/* ── BOTTOM: Weekly Breakdown + Leaderboard ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* ── BOTTOM: Weekly Breakdown (+ embedded team board on Performance tab only) ── */}
+      <div className={`grid gap-4 ${hideTeamRankBadge ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
         <div className="bg-white rounded-2xl border border-black/5 p-5">
           <h2 className="text-xs font-black uppercase tracking-widest text-on-surface mb-5">Weekly Breakdown</h2>
           <div className="space-y-4">
@@ -301,32 +308,34 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-black/5 p-5">
-          <h2 className="text-xs font-black uppercase tracking-widest text-on-surface mb-5">Team Leaderboard</h2>
-          <div className="space-y-3">
-            {[
-              { name: 'Lweendo Phiri', score: 982, rank: 1, trend: 'up' },
-              { name: 'You (Mwape Banda)', score: 945, rank: 2, trend: 'up' },
-              { name: 'Chisomo Kunda', score: 892, rank: 3, trend: 'down' },
-              { name: 'Priya Nambwe', score: 856, rank: 4, trend: 'up' },
-              { name: 'Tiza Mwale', score: 812, rank: 5, trend: 'down' },
-            ].map((u, i) => (
-              <div key={i} className={`flex items-center gap-3 p-3 rounded-xl transition-all ${u.name.includes('You') ? 'bg-primary/5 border border-primary/20' : 'bg-surface-container-low border border-black/5'}`}>
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black ${u.rank === 1 ? 'bg-rag-amber text-white' : u.rank === 2 ? 'bg-gray-300 text-white' : 'bg-surface-container text-on-surface-variant'}`}>
-                  {u.rank}
+        {!hideTeamRankBadge && (
+          <div className="bg-white rounded-2xl border border-black/5 p-5">
+            <h2 className="text-xs font-black uppercase tracking-widest text-on-surface mb-5">Team Leaderboard</h2>
+            <div className="space-y-3">
+              {[
+                { name: 'Lweendo Phiri', score: 982, rank: 1, trend: 'up' },
+                { name: 'You (Mwape Banda)', score: 945, rank: 2, trend: 'up' },
+                { name: 'Chisomo Kunda', score: 892, rank: 3, trend: 'down' },
+                { name: 'Priya Nambwe', score: 856, rank: 4, trend: 'up' },
+                { name: 'Tiza Mwale', score: 812, rank: 5, trend: 'down' },
+              ].map((u, i) => (
+                <div key={i} className={`flex items-center gap-3 p-3 rounded-xl transition-all ${u.name.includes('You') ? 'bg-primary/5 border border-primary/20' : 'bg-surface-container-low border border-black/5'}`}>
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black ${u.rank === 1 ? 'bg-rag-amber text-white' : u.rank === 2 ? 'bg-gray-300 text-white' : 'bg-surface-container text-on-surface-variant'}`}>
+                    {u.rank}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-black truncate">{u.name}</div>
+                    <div className="text-[8px] text-on-surface-variant font-bold">{u.score} pts</div>
+                  </div>
+                  <div className={`flex items-center gap-0.5 text-[9px] font-black ${u.trend === 'up' ? 'text-rag-green' : 'text-rag-red'}`}>
+                    <ArrowUpRight size={10} className={u.trend === 'down' ? 'rotate-90' : ''} />
+                    {u.trend === 'up' ? '+12%' : '-5%'}
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-black truncate">{u.name}</div>
-                  <div className="text-[8px] text-on-surface-variant font-bold">{u.score} pts</div>
-                </div>
-                <div className={`flex items-center gap-0.5 text-[9px] font-black ${u.trend === 'up' ? 'text-rag-green' : 'text-rag-red'}`}>
-                  <ArrowUpRight size={10} className={u.trend === 'down' ? 'rotate-90' : ''} />
-                  {u.trend === 'up' ? '+12%' : '-5%'}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

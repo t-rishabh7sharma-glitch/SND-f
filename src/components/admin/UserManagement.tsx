@@ -8,9 +8,11 @@ import { SYSTEM_USERS, SystemUser } from '../../data/kpiStore';
 
 interface UserManagementProps {
   onAction: (msg: string) => void;
+  /** Back-office fintech palette when used inside `/bo/admin`. */
+  variant?: 'default' | 'bo';
 }
 
-const ROLE_COLORS: Record<string, string> = {
+const ROLE_COLORS_DEFAULT: Record<string, string> = {
   ASE: 'bg-primary/10 text-primary',
   TL: 'bg-rag-green-bg text-rag-green',
   TDR: 'bg-rag-amber-bg text-rag-amber',
@@ -19,19 +21,31 @@ const ROLE_COLORS: Record<string, string> = {
   ADMIN: 'bg-on-surface/10 text-on-surface',
 };
 
+const ROLE_COLORS_BO: Record<string, string> = {
+  ASE: 'bg-bo-primary/15 text-bo-secondary',
+  TL: 'bg-emerald-100 text-emerald-800',
+  TDR: 'bg-amber-100 text-amber-900',
+  ZBM: 'bg-violet-100 text-violet-800',
+  REBALANCER: 'bg-sky-100 text-sky-800',
+  ADMIN: 'bg-bo-surface text-bo-secondary',
+};
+
 const TERRITORIES = [
   'Lusaka East', 'Lusaka West', 'Lusaka Central', 'Lusaka CBD',
   'Ndola Central', 'Kitwe North', 'Kabwe Central', 'Livingstone South',
   'Chipata East', 'Kasama North', 'Mansa Central', 'Zambia South',
 ];
 
-const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
+const UserManagement: React.FC<UserManagementProps> = ({ onAction, variant = 'default' }) => {
+  const bo = variant === 'bo';
+  const ROLE_COLORS = bo ? ROLE_COLORS_BO : ROLE_COLORS_DEFAULT;
   const [users, setUsers] = useState<SystemUser[]>(SYSTEM_USERS);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
   const [showAddModal, setShowAddModal] = useState(false);
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'ASE', territory: 'Lusaka East', region: 'Lusaka' });
+  const [userDetail, setUserDetail] = useState<SystemUser | null>(null);
 
   const filtered = users.filter(u => {
     const matchSearch = u.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -64,15 +78,15 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className={`space-y-8 max-w-7xl mx-auto ${bo ? 'bo-shell' : ''}`}>
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-4xl font-display font-extrabold text-primary">User Management</h1>
-          <p className="text-on-surface-variant text-sm font-medium">Provision, manage, and assign roles to all system users</p>
+          <h1 className={`text-2xl lg:text-4xl font-display font-extrabold ${bo ? 'text-bo-secondary' : 'text-primary'}`}>User Management</h1>
+          <p className={`text-sm font-medium ${bo ? 'text-bo-muted' : 'text-on-surface-variant'}`}>Provision, manage, and assign roles to all system users</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-5 py-3 bg-primary text-white rounded-2xl text-xs font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition-all"
+          className={`flex items-center gap-2 px-5 py-3 text-white text-xs font-bold uppercase tracking-widest shadow-md transition-all rounded-lg ${bo ? 'bg-bo-primary hover:opacity-95' : 'bg-primary rounded-2xl shadow-xl hover:scale-105'}`}
         >
           <UserPlus size={16} /> Add New User
         </button>
@@ -86,14 +100,14 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by name, ID, or email..."
-            className="w-full bg-surface-container-lowest border border-black/5 rounded-xl pl-10 pr-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-primary outline-none"
+            className={`w-full bg-surface-container-lowest border border-black/5 rounded-xl pl-10 pr-4 py-3 text-sm font-semibold focus:ring-2 outline-none ${bo ? 'focus:ring-bo-primary' : 'focus:ring-primary'}`}
           />
         </div>
         {(['All', 'ASE', 'TL', 'TDR', 'ZBM', 'REBALANCER'] as const).map(r => (
           <button
             key={r}
             onClick={() => setRoleFilter(r)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${roleFilter === r ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-low'}`}
+            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${roleFilter === r ? (bo ? 'bg-bo-secondary text-white' : 'bg-primary text-white') : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-low'}`}
           >
             {r}
           </button>
@@ -110,7 +124,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
       </div>
 
       {/* Table */}
-      <div className="card-base p-0 overflow-hidden">
+      <div className={`p-0 overflow-hidden ${bo ? 'bo-card' : 'card-base'}`}>
         <div className="p-4 border-b border-black/5 flex justify-between items-center">
           <span className="text-xs font-bold text-on-surface-variant">{filtered.length} users found</span>
         </div>
@@ -129,11 +143,12 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
                   key={u.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="border-b border-black/5 hover:bg-surface-container-low transition-colors"
+                  className={`border-b border-black/5 transition-colors ${bo ? 'cursor-pointer hover:bg-bo-surface/80' : 'hover:bg-surface-container-low'}`}
+                  onClick={bo ? () => setUserDetail(u) : undefined}
                 >
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${bo ? 'bg-bo-primary/15 text-bo-secondary' : 'bg-primary/10 text-primary'}`}>
                         {u.name.split(' ').map(n => n[0]).join('')}
                       </div>
                       <div>
@@ -171,7 +186,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
                     <div className="flex items-center gap-1">
                       {u.status !== 'Active' && (
                         <button
-                          onClick={() => handleStatusToggle(u.id, 'activate')}
+                          onClick={(e) => { e.stopPropagation(); handleStatusToggle(u.id, 'activate'); }}
                           className="p-1.5 hover:bg-rag-green-bg text-rag-green rounded-lg transition-colors"
                           title="Activate"
                         >
@@ -180,17 +195,17 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
                       )}
                       {u.status === 'Active' && (
                         <button
-                          onClick={() => handleStatusToggle(u.id, 'suspend')}
+                          onClick={(e) => { e.stopPropagation(); handleStatusToggle(u.id, 'suspend'); }}
                           className="p-1.5 hover:bg-rag-red-bg text-rag-red rounded-lg transition-colors"
                           title="Suspend"
                         >
                           <XCircle size={15} />
                         </button>
                       )}
-                      <button onClick={() => onAction(`Editing user ${u.id}...`)} className="p-1.5 hover:bg-primary/10 text-primary rounded-lg transition-colors" title="Edit">
+                      <button onClick={(e) => { e.stopPropagation(); onAction(`Editing user ${u.id}...`); }} className={`p-1.5 rounded-lg transition-colors ${bo ? 'hover:bg-bo-primary/10 text-bo-primary' : 'hover:bg-primary/10 text-primary'}`} title="Edit">
                         <Edit2 size={15} />
                       </button>
-                      <button onClick={() => onAction(`Password reset sent to ${u.email}`)} className="p-1.5 hover:bg-surface-container text-on-surface-variant rounded-lg transition-colors" title="Reset Password">
+                      <button onClick={(e) => { e.stopPropagation(); onAction(`Password reset sent to ${u.email}`); }} className="p-1.5 hover:bg-surface-container text-on-surface-variant rounded-lg transition-colors" title="Reset Password">
                         <RefreshCw size={15} />
                       </button>
                     </div>
@@ -220,7 +235,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
               onClick={e => e.stopPropagation()}
             >
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-primary">Add New User</h2>
+                <h2 className={`text-xl font-bold ${bo ? 'text-bo-secondary' : 'text-primary'}`}>Add New User</h2>
                 <button onClick={() => setShowAddModal(false)} className="p-2 hover:bg-surface-container rounded-xl"><X size={20} /></button>
               </div>
               <div className="space-y-4">
@@ -235,7 +250,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
                       value={(newUser as any)[f.key]}
                       onChange={e => setNewUser(prev => ({ ...prev, [f.key]: e.target.value }))}
                       placeholder={f.placeholder}
-                      className="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-primary outline-none"
+                      className={`w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 outline-none ${bo ? 'focus:ring-bo-primary' : 'focus:ring-primary'}`}
                     />
                   </div>
                 ))}
@@ -244,7 +259,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
                   <select
                     value={newUser.role}
                     onChange={e => setNewUser(p => ({ ...p, role: e.target.value }))}
-                    className="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-primary outline-none"
+                    className={`w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 outline-none ${bo ? 'focus:ring-bo-primary' : 'focus:ring-primary'}`}
                   >
                     {['ASE', 'TL', 'TDR', 'ZBM', 'REBALANCER'].map(r => <option key={r}>{r}</option>)}
                   </select>
@@ -254,24 +269,77 @@ const UserManagement: React.FC<UserManagementProps> = ({ onAction }) => {
                   <select
                     value={newUser.territory}
                     onChange={e => setNewUser(p => ({ ...p, territory: e.target.value }))}
-                    className="w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-primary outline-none"
+                    className={`w-full bg-surface-container border-none rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 outline-none ${bo ? 'focus:ring-bo-primary' : 'focus:ring-primary'}`}
                   >
                     {TERRITORIES.map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setShowAddModal(false)} className="flex-1 py-3 rounded-2xl bg-surface-container text-on-surface-variant text-sm font-bold hover:bg-surface-container-low transition-all">Cancel</button>
+                <button onClick={() => setShowAddModal(false)} className={`flex-1 py-3 bg-surface-container text-on-surface-variant text-sm font-bold hover:bg-surface-container-low transition-all rounded-lg ${bo ? '' : 'rounded-2xl'}`}>Cancel</button>
                 <button
                   onClick={handleAddUser}
                   disabled={!newUser.name || !newUser.email}
-                  className="flex-1 py-3 rounded-2xl bg-primary text-white text-sm font-bold shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50"
+                  className={`flex-1 py-3 text-white text-sm font-bold shadow-md transition-all disabled:opacity-50 rounded-lg ${bo ? 'bg-bo-primary hover:opacity-95' : 'rounded-2xl bg-primary shadow-xl hover:scale-[1.02]'}`}
                 >
                   Create User
                 </button>
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {bo && userDetail && (
+          <>
+            <motion.button
+              type="button"
+              aria-label="Close"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] bg-black/35"
+              onClick={() => setUserDetail(null)}
+            />
+            <motion.aside
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+              className="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col border-l border-black/10 bg-white shadow-2xl"
+            >
+              <div className="flex items-start justify-between border-b border-black/5 bg-bo-secondary px-5 py-4 text-white">
+                <div>
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-white/70">{userDetail.id}</p>
+                  <h2 className="text-lg font-bold">{userDetail.name}</h2>
+                </div>
+                <button type="button" onClick={() => setUserDetail(null)} className="rounded-lg p-2 hover:bg-white/10">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="flex-1 space-y-4 overflow-y-auto p-5 text-sm">
+                <div>
+                  <p className="text-[10px] font-bold uppercase text-bo-muted">Email</p>
+                  <p className="font-semibold text-black">{userDetail.email}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase text-bo-muted">Role & territory</p>
+                  <p className="text-bo-secondary">
+                    {userDetail.role} · {userDetail.territory}
+                  </p>
+                  <p className="text-xs text-bo-muted">{userDetail.region}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase text-bo-muted">Status</p>
+                  <p className="font-bold text-black">{userDetail.status}</p>
+                </div>
+                <p className="text-xs text-bo-muted">
+                  Provisioning and KYC checks will call <code className="rounded bg-bo-surface px-1">/bo/users</code> when APIs are connected.
+                </p>
+              </div>
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
     </div>

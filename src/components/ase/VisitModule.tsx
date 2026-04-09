@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { MapPin, Navigation, CheckCircle2, XCircle, Camera, Clock, AlertTriangle, ChevronRight, Save, Send, TrendingUp } from 'lucide-react';
 import { Outlet, VisitData } from '../../types';
@@ -135,8 +136,8 @@ const VisitModule: React.FC<VisitModuleProps> = ({ outlet, onClose, onSubmit }) 
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8 bg-black/40 backdrop-blur-sm">
+  const modal = (
+    <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/40 p-3 backdrop-blur-sm [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))] [padding-top:max(0.75rem,env(safe-area-inset-top))] sm:p-4 lg:p-8">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -719,6 +720,9 @@ const VisitModule: React.FC<VisitModuleProps> = ({ outlet, onClose, onSubmit }) 
       </motion.div>
     </div>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(modal, document.body);
 };
 
 export default VisitModule;
