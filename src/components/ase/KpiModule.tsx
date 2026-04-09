@@ -51,7 +51,7 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
       val: todaySIMs.toString(),
       sub: `${todaySIMsActivated} activated`,
       icon: <Smartphone size={22} />,
-      color: 'bg-rag-green-bg text-rag-green',
+      color: 'bg-primary/10 text-primary',
     },
     {
       id: 'geo',
@@ -67,7 +67,7 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
       val: todayAgents.toString(),
       sub: todayAgents > 0 ? agentNames.slice(0, todayAgents).join(', ') : 'None yet',
       icon: <UserPlus size={22} />,
-      color: 'bg-blue-50 text-blue-600',
+      color: 'bg-primary/10 text-primary',
     },
   ];
 
@@ -106,7 +106,7 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
             onClick={() => setDrillCard(metric.id)}
-            className="bg-white rounded-2xl p-5 border border-black/5 hover:border-primary/30 hover:shadow-lg cursor-pointer transition-all group"
+            className="group cursor-pointer rounded-2xl border border-border bg-white p-5 transition-all hover:border-primary/35 hover:shadow-lg"
           >
             <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-3 ${metric.color} group-hover:scale-110 transition-transform`}>
               {metric.icon}
@@ -122,15 +122,15 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
       {/* ── DRILL-DOWN MODAL ── */}
       <AnimatePresence>
         {drillCard && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setDrillCard(null)}>
+          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm" onClick={() => setDrillCard(null)}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               onClick={e => e.stopPropagation()}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
+              className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
             >
-              <div className="p-5 border-b border-black/5 flex justify-between items-center">
+              <div className="flex items-center justify-between border-b border-border p-5">
                 <h3 className="text-sm font-black uppercase tracking-widest text-primary">
                   {drillCard === 'visit' && 'Visit Rate Detail'}
                   {drillCard === 'sims' && 'SIM Registration & Activation'}
@@ -180,13 +180,13 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
                 {drillCard === 'sims' && (
                   <>
                     <div className="grid grid-cols-2 gap-3 text-center">
-                      <div className="bg-rag-green-bg rounded-xl p-5">
-                        <div className="text-3xl font-black font-display text-rag-green">{todaySIMs}</div>
-                        <div className="text-[8px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1">SIMs Registered</div>
+                      <div className="rounded-xl bg-primary/10 p-5">
+                        <div className="font-display text-3xl font-black text-primary">{todaySIMs}</div>
+                        <div className="mt-1 text-[8px] font-black uppercase tracking-widest text-on-surface-variant/50">SIMs Registered</div>
                       </div>
-                      <div className="bg-blue-50 rounded-xl p-5">
-                        <div className="text-3xl font-black font-display text-blue-600">{todaySIMsActivated}</div>
-                        <div className="text-[8px] font-black uppercase tracking-widest text-on-surface-variant/50 mt-1">SIMs Activated</div>
+                      <div className="rounded-xl bg-primary/5 p-5">
+                        <div className="font-display text-3xl font-black text-primary">{todaySIMsActivated}</div>
+                        <div className="mt-1 text-[8px] font-black uppercase tracking-widest text-on-surface-variant/50">SIMs Activated</div>
                       </div>
                     </div>
                     <div className="space-y-3">
@@ -246,10 +246,10 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
                 {/* ═══ NEW AGENTS DRILL-DOWN ═══ */}
                 {drillCard === 'agents' && (
                   <>
-                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl mb-2">
+                    <div className="mb-2 flex items-center justify-between rounded-xl bg-primary/10 p-4">
                       <div>
-                        <div className="text-[8px] font-black uppercase tracking-widest text-blue-600/50">Today's Activations</div>
-                        <div className="text-3xl font-black font-display text-blue-600">{todayAgents}</div>
+                        <div className="text-[8px] font-black uppercase tracking-widest text-primary/70">Today&apos;s Activations</div>
+                        <div className="font-display text-3xl font-black text-primary">{todayAgents}</div>
                       </div>
                       <div className="text-right">
                         <div className="text-[8px] font-black uppercase tracking-widest text-on-surface-variant/50">Daily Target</div>
@@ -260,8 +260,10 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
                       <div className="space-y-2">
                         <div className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/50 px-1">Agents Recruited Today</div>
                         {agentNames.slice(0, todayAgents).map((name, i) => (
-                          <div key={i} className="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-black/5">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px] font-black">{name.split(' ').map(w => w[0]).join('')}</div>
+                          <div key={i} className="flex items-center gap-3 rounded-xl border border-border bg-surface-container-low p-3">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-[10px] font-black text-primary">
+                              {name.split(' ').map(w => w[0]).join('')}
+                            </div>
                             <div className="flex-1">
                               <div className="text-xs font-black">{name}</div>
                               <div className="text-[8px] font-bold text-on-surface-variant/40 uppercase">Activated today</div>
@@ -286,8 +288,8 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
 
       {/* ── BOTTOM: Weekly Breakdown (+ embedded team board on Performance tab only) ── */}
       <div className={`grid gap-4 ${hideTeamRankBadge ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
-        <div className="bg-white rounded-2xl border border-black/5 p-5">
-          <h2 className="text-xs font-black uppercase tracking-widest text-on-surface mb-5">Weekly Breakdown</h2>
+        <div className="rounded-2xl border border-border bg-white p-5">
+          <h2 className="mb-5 text-xs font-black uppercase tracking-widest text-on-surface">Weekly Breakdown</h2>
           <div className="space-y-4">
             {weeklyBreakdown.map((item, i) => (
               <div key={i} className="space-y-1.5">
@@ -309,8 +311,8 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
         </div>
 
         {!hideTeamRankBadge && (
-          <div className="bg-white rounded-2xl border border-black/5 p-5">
-            <h2 className="text-xs font-black uppercase tracking-widest text-on-surface mb-5">Team Leaderboard</h2>
+          <div className="rounded-2xl border border-border bg-white p-5">
+            <h2 className="mb-5 text-xs font-black uppercase tracking-widest text-on-surface">Team Leaderboard</h2>
             <div className="space-y-3">
               {[
                 { name: 'Lweendo Phiri', score: 982, rank: 1, trend: 'up' },
@@ -319,7 +321,12 @@ const KpiModule: React.FC<KpiModuleProps> = ({ sessionKpis, hideTeamRankBadge = 
                 { name: 'Priya Nambwe', score: 856, rank: 4, trend: 'up' },
                 { name: 'Tiza Mwale', score: 812, rank: 5, trend: 'down' },
               ].map((u, i) => (
-                <div key={i} className={`flex items-center gap-3 p-3 rounded-xl transition-all ${u.name.includes('You') ? 'bg-primary/5 border border-primary/20' : 'bg-surface-container-low border border-black/5'}`}>
+                <div
+                  key={i}
+                  className={`flex items-center gap-3 rounded-xl border p-3 transition-all ${
+                    u.name.includes('You') ? 'border-primary/25 bg-primary/5' : 'border-border bg-surface-container-low'
+                  }`}
+                >
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black ${u.rank === 1 ? 'bg-rag-amber text-white' : u.rank === 2 ? 'bg-gray-300 text-white' : 'bg-surface-container text-on-surface-variant'}`}>
                     {u.rank}
                   </div>

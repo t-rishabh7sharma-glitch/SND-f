@@ -1,7 +1,6 @@
 import React from 'react';
 import { ChevronRight, Coins, Gift, Sparkles } from 'lucide-react';
-
-const BRAND = { green: '#1a6b3c' };
+import { FIELD_THEME, field } from './fieldAppTheme';
 
 const TOTAL_POINTS = 1240;
 const TIER_PROGRESS_PCT = 68;
@@ -47,16 +46,18 @@ export default function AseLoyaltyScreen({ setToast }: Props) {
   };
 
   return (
-    <div className="box-border flex min-h-0 min-w-0 w-full max-w-[100vw] flex-1 flex-col overflow-y-auto overflow-x-hidden bg-[#e7eceb] px-3 pb-4 pt-3 [padding-left:max(0.75rem,env(safe-area-inset-left))] [padding-right:max(0.75rem,env(safe-area-inset-right))]">
+    <div
+      className="box-border flex min-h-0 min-w-0 w-full max-w-[100vw] flex-1 flex-col overflow-y-auto overflow-x-hidden px-3 pb-4 pt-3 [padding-left:max(0.75rem,env(safe-area-inset-left))] [padding-right:max(0.75rem,env(safe-area-inset-right))]"
+      style={{ backgroundColor: FIELD_THEME.bg }}
+    >
       <div className="w-full min-w-0">
-        <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-[#6b7674]">Rewards</p>
+        <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider" style={{ color: FIELD_THEME.textMuted }}>
+          Rewards
+        </p>
 
-        {/* Hero — total loyalty points (Active Territory–style card) */}
         <section
-          className="relative overflow-hidden rounded-2xl shadow-[0_8px_28px_-6px_rgba(0,0,0,0.2)] ring-1 ring-black/5"
-          style={{
-            background: `linear-gradient(155deg, #0b6b5a 0%, ${BRAND.green} 55%, #0d3d24 100%)`,
-          }}
+          className="relative overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5"
+          style={{ background: field.cardGradient, boxShadow: field.shadowElevated }}
         >
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/[0.06]" />
           <div className="relative px-4 py-5">
@@ -70,8 +71,8 @@ export default function AseLoyaltyScreen({ setToast }: Props) {
             <p className="mt-2 text-[clamp(0.75rem,3vw,0.8125rem)] leading-snug text-white/80">
               Silver tier · earn on visits & eligible activities
             </p>
-            <div className="mt-4 h-1.5 max-w-full overflow-hidden rounded-full bg-white/15">
-              <div className="h-full rounded-full bg-[#4ade80]" style={{ width: `${TIER_PROGRESS_PCT}%` }} />
+            <div className="mt-4 h-1.5 max-w-full overflow-hidden rounded-full bg-white/20">
+              <div className="h-full rounded-full" style={{ width: `${TIER_PROGRESS_PCT}%`, backgroundColor: FIELD_THEME.focus }} />
             </div>
             <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/50">
               <span>
@@ -82,7 +83,7 @@ export default function AseLoyaltyScreen({ setToast }: Props) {
             <button
               type="button"
               onClick={scrollToRedeem}
-              className="mt-4 text-[13px] font-semibold text-emerald-200/95 underline-offset-2 transition hover:text-white"
+              className="mt-4 text-[13px] font-semibold text-white/90 underline-offset-2 transition hover:text-white"
             >
               Redeem rewards ›
             </button>
@@ -93,33 +94,43 @@ export default function AseLoyaltyScreen({ setToast }: Props) {
       {/* Points to claim */}
       <section className="mt-5 w-full min-w-0">
         <div className="mb-2 flex items-center justify-between px-1">
-          <h2 className="text-sm font-black uppercase tracking-widest text-[#1a3d2e]">Points to claim</h2>
+          <h2 className="text-sm font-black uppercase tracking-widest" style={{ color: FIELD_THEME.text }}>
+            Points to claim
+          </h2>
           <button
             type="button"
-            className="text-[11px] font-semibold text-[#0d7d8c]"
+            className="text-[11px] font-semibold"
+            style={{ color: FIELD_THEME.primary }}
             onClick={() => setToast({ message: 'Browse all earn opportunities in the next app update.', type: 'success' })}
           >
             More ways to earn ›
           </button>
         </div>
-        <div className="space-y-2 rounded-2xl border border-black/5 bg-white p-3 shadow-sm">
+        <div
+          className="space-y-2 rounded-2xl border bg-white p-3 shadow-sm"
+          style={{ borderColor: FIELD_THEME.border, boxShadow: field.shadowCard }}
+        >
           {POINTS_TO_CLAIM.map((row) => (
             <div
               key={row.id}
-              className="flex items-stretch gap-3 rounded-xl border border-[#eef2f1] bg-[#fafcfb] px-3 py-3"
+              className="flex items-stretch gap-3 rounded-xl border bg-slate-50/50 px-3 py-3"
+              style={{ borderColor: FIELD_THEME.border }}
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100/90 text-amber-700">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
                 <Coins size={20} strokeWidth={1.75} />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-bold text-[#1a1a1a]">
+                <div className="text-sm font-bold" style={{ color: FIELD_THEME.text }}>
                   {row.points} pts · {row.title}
                 </div>
-                <p className="mt-0.5 text-[11px] text-[#7a8583]">{row.expires}</p>
+                <p className="mt-0.5 text-[11px]" style={{ color: FIELD_THEME.textMuted }}>
+                  {row.expires}
+                </p>
               </div>
               <button
                 type="button"
-                className="shrink-0 self-center rounded-lg border-2 border-primary/40 px-2.5 py-1.5 text-[11px] font-bold text-primary transition hover:bg-primary/10"
+                className="shrink-0 self-center rounded-lg border-2 px-2.5 py-1.5 text-[11px] font-bold transition hover:bg-slate-100"
+                style={{ borderColor: FIELD_THEME.primary, color: FIELD_THEME.primary }}
                 onClick={() => setToast({ message: `Claim queued: ${row.points} pts`, type: 'success' })}
               >
                 Claim
@@ -132,10 +143,13 @@ export default function AseLoyaltyScreen({ setToast }: Props) {
       {/* Redeem your points */}
       <section ref={redeemRef} className="mt-5 w-full min-w-0 scroll-mt-4">
         <div className="mb-2 flex items-center justify-between px-1">
-          <h2 className="text-sm font-black uppercase tracking-widest text-[#1a3d2e]">Redeem your points</h2>
+          <h2 className="text-sm font-black uppercase tracking-widest" style={{ color: FIELD_THEME.text }}>
+            Redeem your points
+          </h2>
           <button
             type="button"
-            className="text-[11px] font-semibold text-[#0d7d8c]"
+            className="text-[11px] font-semibold"
+            style={{ color: FIELD_THEME.primary }}
             onClick={() => setToast({ message: 'Your coupons will appear here after redemption.', type: 'success' })}
           >
             My rewards ›
@@ -145,20 +159,29 @@ export default function AseLoyaltyScreen({ setToast }: Props) {
           {REDEEM_OFFERS.map((offer) => (
             <div
               key={offer.id}
-              className="w-[min(260px,calc(100vw-2.5rem))] max-w-[85vw] shrink-0 rounded-2xl border border-black/5 bg-white p-4 shadow-sm"
+              className="w-[min(260px,calc(100vw-2.5rem))] max-w-[85vw] shrink-0 rounded-2xl border bg-white p-4 shadow-sm"
+              style={{ borderColor: FIELD_THEME.border }}
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded-xl"
+                style={{ backgroundColor: `${FIELD_THEME.primary}18`, color: FIELD_THEME.primary }}
+              >
                 <Gift size={20} strokeWidth={1.75} />
               </div>
-              <h3 className="mt-3 text-[15px] font-bold text-[#1a1a1a]">{offer.title}</h3>
-              <p className="mt-1 text-[12px] leading-snug text-[#666]">{offer.detail}</p>
-              <p className="mt-3 flex items-center gap-1 text-sm font-bold tabular-nums text-[#1a3d2e]">
+              <h3 className="mt-3 text-[15px] font-bold" style={{ color: FIELD_THEME.text }}>
+                {offer.title}
+              </h3>
+              <p className="mt-1 text-[12px] leading-snug" style={{ color: FIELD_THEME.textMuted }}>
+                {offer.detail}
+              </p>
+              <p className="mt-3 flex items-center gap-1 text-sm font-bold tabular-nums" style={{ color: FIELD_THEME.text }}>
                 <Sparkles size={14} className="text-amber-500" />
                 {offer.cost.toLocaleString()} pts
               </p>
               <button
                 type="button"
-                className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl border-2 border-primary/35 py-2.5 text-[13px] font-bold text-primary transition hover:bg-primary/10"
+                className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl border-2 py-2.5 text-[13px] font-bold transition hover:bg-slate-50"
+                style={{ borderColor: FIELD_THEME.primary, color: FIELD_THEME.primary }}
                 onClick={() =>
                   offer.cost > TOTAL_POINTS
                     ? setToast({ message: 'Not enough points for this reward.', type: 'error' })
@@ -173,7 +196,9 @@ export default function AseLoyaltyScreen({ setToast }: Props) {
         </div>
       </section>
 
-      <p className="mt-6 mb-2 text-center text-[10px] text-[#9aa9a6]">Points are illustrative for demo.</p>
+      <p className="mt-6 mb-2 text-center text-[10px]" style={{ color: FIELD_THEME.textMuted }}>
+        Points are illustrative for demo.
+      </p>
     </div>
   );
 }

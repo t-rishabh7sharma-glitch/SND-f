@@ -11,17 +11,19 @@
   --color-bo-muted: #3d4f6f;
   --shadow-bo-card: 0 8px 24px rgba(0, 41, 112, 0.08);
 
-  --color-primary: #00682f;
-  --color-primary-dark: #004d22;
-  --color-secondary: #296b3d;
-  --color-primary-container: #d4edda;
+  /* App-wide brand (field + shared CRM chrome) — enterprise blue */
+  --color-primary: #0b5ed7;
+  --color-primary-dark: #084298;
+  --color-secondary: #1e3a8a;
+  --color-primary-container: #dbeafe;
   --color-on-primary: #ffffff;
-  --color-surface: #fcf9f8;
+  --color-border: #d1d5db;
+  --color-surface: #f4f6f9;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f3ede9;
-  --color-surface-container: #ede8e4;
-  --color-on-surface: #1a1a1a;
-  --color-on-surface-variant: #555555;
+  --color-surface-container-low: #f4f6f9;
+  --color-surface-container: #e5e7eb;
+  --color-on-surface: #111827;
+  --color-on-surface-variant: #6b7280;
   
   --color-rag-green: #00682f;
   --color-rag-amber: #b45309;
@@ -79,17 +81,25 @@
   .bo-card {
     @apply rounded-[14px] border border-black/5 bg-white shadow-[var(--shadow-bo-card)];
   }
+
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center rounded-xl font-bold transition-colors;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-on-primary hover:bg-primary-dark;
+  }
 }
 
 @keyframes pulse-custom {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(11, 94, 215, 0.45); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(11, 94, 215, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(11, 94, 215, 0); }
 }
 
 .pulse-dot {
-  @apply w-2 h-2 bg-emerald-500 rounded-full inline-block mr-2;
-  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  @apply bg-primary inline-block mr-2 h-2 w-2 rounded-full;
+  box-shadow: 0 0 0 0 rgba(11, 94, 215, 0.45);
   animation: pulse-custom 2s infinite;
 }
 

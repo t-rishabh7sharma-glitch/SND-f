@@ -1,5 +1,6 @@
 import { Wifi, WifiOff, RefreshCw, Navigation, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { FIELD_THEME } from '../components/ase/fieldAppTheme';
 import { useFieldAppCore } from './useFieldAppCore';
 import FieldAppViews from './FieldAppViews';
 
@@ -23,19 +24,31 @@ export default function FieldAppMobile() {
   const headerTitle = VIEW_TITLE[core.activeView] ?? 'Field';
 
   return (
-    <div className="field-app-shell flex h-[100dvh] max-h-[100dvh] w-full max-w-[100vw] flex-col overflow-hidden bg-surface font-sans text-on-surface selection:bg-primary/20">
+    <div
+      className="field-app-shell flex h-[100dvh] max-h-[100dvh] w-full max-w-[100vw] flex-col overflow-hidden font-sans antialiased selection:bg-[#93C5FD]/30"
+      style={{ backgroundColor: FIELD_THEME.bg, color: FIELD_THEME.text }}
+    >
       <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         {!['home', 'loyalty', 'profile'].includes(core.activeView) && (
-          <header className="h-16 bg-white border-b border-black/5 px-4 flex items-center justify-between shrink-0 sticky top-0 z-30">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-sm shrink-0">
+          <header
+            className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b bg-white px-4"
+            style={{ borderColor: FIELD_THEME.border }}
+          >
+            <div className="flex min-w-0 items-center gap-3">
+              <div
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
+                style={{ backgroundColor: FIELD_THEME.primary }}
+              >
                 <Navigation size={16} />
               </div>
               <div className="min-w-0">
-                <div className="text-[8px] font-bold text-on-surface-variant uppercase tracking-widest leading-none mb-0.5">
+                <div
+                  className="mb-0.5 text-[8px] font-bold uppercase leading-none tracking-widest"
+                  style={{ color: FIELD_THEME.textMuted }}
+                >
                   {core.activeView === 'profile' || core.activeView === 'loyalty' ? 'Zamtel field' : 'Active territory'}
                 </div>
-                <div className="text-xs font-bold truncate max-w-[160px]">
+                <div className="max-w-[160px] truncate text-xs font-bold" style={{ color: FIELD_THEME.text }}>
                   {core.activeView === 'profile' || core.activeView === 'loyalty' ? headerTitle : user.territory}
                 </div>
               </div>
@@ -55,7 +68,12 @@ export default function FieldAppMobile() {
               <button
                 type="button"
                 onClick={() => core.setActiveView('profile')}
-                className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold border border-primary/20 text-xs"
+                className="flex h-8 w-8 items-center justify-center rounded-full border text-xs font-bold"
+                style={{
+                  backgroundColor: `${FIELD_THEME.primary}14`,
+                  borderColor: `${FIELD_THEME.primary}33`,
+                  color: FIELD_THEME.primary,
+                }}
               >
                 {user.name
                   .split(' ')
@@ -88,7 +106,8 @@ export default function FieldAppMobile() {
         <div className="pointer-events-none absolute bottom-3 right-3 z-30 sm:bottom-4 sm:right-4">
           <Link
             to="/field"
-            className="pointer-events-auto block rounded-full border border-black/10 bg-white/95 px-3 py-1.5 text-[10px] font-bold text-on-surface-variant shadow-md backdrop-blur-sm hover:border-primary/30"
+            className="pointer-events-auto block rounded-full border bg-white/95 px-3 py-1.5 text-[10px] font-bold shadow-md backdrop-blur-sm hover:opacity-90"
+            style={{ borderColor: FIELD_THEME.border, color: FIELD_THEME.textMuted }}
           >
             Web layout
           </Link>
@@ -96,8 +115,8 @@ export default function FieldAppMobile() {
       </main>
 
       <nav
-        className="field-app-bottom-nav shrink-0 border-t border-[#e8e8e8] bg-white px-0.5 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.06)] flex w-full min-w-0 touch-manipulation items-stretch justify-around"
-        style={{ minHeight: 'calc(3.5rem + env(safe-area-inset-bottom, 0px))' }}
+        className="field-app-bottom-nav flex w-full min-w-0 shrink-0 touch-manipulation items-stretch justify-around border-t bg-white px-0.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_24px_rgba(15,23,42,0.06)]"
+        style={{ borderColor: FIELD_THEME.border, minHeight: 'calc(3.5rem + env(safe-area-inset-bottom, 0px))' }}
         aria-label="Field navigation"
       >
         {core.mobileNavItems.map((item) => {
@@ -107,19 +126,19 @@ export default function FieldAppMobile() {
               key={item.id}
               type="button"
               onClick={() => core.setActiveView(item.id)}
-              className={`flex min-h-[48px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 transition-colors active:opacity-90 ${
-                active ? 'text-[#1a6b3c]' : 'text-[#999]'
-              }`}
+              className="flex min-h-[48px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 transition-colors active:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#93C5FD]"
+              style={{ color: active ? FIELD_THEME.primary : FIELD_THEME.textMuted }}
             >
-              <item.Icon size={20} strokeWidth={1.3} className={`shrink-0 ${active ? 'text-[#1a6b3c]' : 'text-[#aaa]'}`} />
+              <item.Icon size={20} strokeWidth={1.3} className="shrink-0" style={{ color: active ? FIELD_THEME.primary : '#9CA3AF' }} />
               <span
                 className={`max-w-[5.5rem] truncate text-center text-[10px] leading-tight min-[400px]:max-w-none ${
-                  active ? 'font-semibold text-[#1a6b3c]' : 'font-normal text-[#999]'
+                  active ? 'font-semibold' : 'font-normal'
                 }`}
+                style={{ color: active ? FIELD_THEME.primary : FIELD_THEME.textMuted }}
               >
                 {item.label}
               </span>
-              {active && <span className="h-[3px] w-[3px] shrink-0 rounded-full bg-[#1a6b3c]" aria-hidden />}
+              {active && <span className="h-[3px] w-[3px] shrink-0 rounded-full bg-[#0B5ED7]" aria-hidden />}
             </button>
           );
         })}
